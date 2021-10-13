@@ -6,27 +6,37 @@ const container = document.querySelector('.container')
 container.innerHTML = Navbar();
 
 window.addEventListener('load', () => {
-     const searchBtn = document.querySelector('.searchBtn');
-     searchBtn.addEventListener('click', showFood)
+    if( window.location.pathname === '/searchRecipe.html'){
+         const searchBtn = document.querySelector('.searchBtn');
+         searchBtn.addEventListener('click', showFood);
+    }
+    if( window.location.pathname === '/recipeOfTheDay.html'){
+         recipeOfTheDay();
+    }
+
+    if( window.location.pathname === '/latestRecipe.html'){
+        // recipeOfTheDay();
+   }
 })
 
-function searchFood(q){
-    
-        let fetchReq = fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${q}`)
+function searchFood(q){    
+        const fetchReq = fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${q}`)
         .then( res => res.json() )
         .then( res => res.meals[0]);       
         
-        return fetchReq;
-    
-    
+        return fetchReq;    
 }
 
 async function showFood(){
     const searchInput = document.querySelector('input[name="search"]').value
     console.log(searchInput)
     const data = await searchFood(searchInput);
-    
-    const {idMeal, strMeal, strMealThumb, strCategory, strTags, strYoutube, strArea, strInstructions, ...rest} = data;
+    showRecipe(data);
+}
+
+function showRecipe(inputData){
+
+    const {idMeal, strMeal, strMealThumb, strCategory, strTags, strYoutube, strArea, strInstructions, ...rest} = inputData;
         
     const ingredients = []
         
@@ -64,3 +74,13 @@ async function showFood(){
     const foodIngredients = document.querySelector('.foodIngredients')
     foodIngredients.textContent = `Ingredients: ${[...ingredients]}`;
 }
+
+function recipeOfTheDay(){
+    // https://www.themealdb.com/api/json/v1/1/random.php
+    fetch(`https://www.themealdb.com/api/json/v1/1/random.php`)
+        .then( res => res.json() )
+        .then( res => res.meals[0])
+        .then( res => showRecipe(res) );
+}
+
+
