@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
     }
 
     if( window.location.pathname === '/latestRecipe.html'){
-        // recipeOfTheDay();
+        latestRecipe()
    }
 })
 
@@ -83,4 +83,21 @@ function recipeOfTheDay(){
         .then( res => showRecipe(res) );
 }
 
+
+function latestRecipe(){
+    // //https://www.themealdb.com/api/json/v1/1/latest.php
+    fetch(`https://www.themealdb.com/api/json/v1/1/latest.php`)
+        .then( res => res.json() )
+        .then( res => res.meals.strMeal )
+        .then( res => errorMsg(res) )
+        .catch(e => console.log(e))  
+}
+
+function errorMsg(msg){
+    const parent = document.querySelector('.foodContainer');
+    const pTag = document.createElement('p');
+    pTag.textContent = msg;
+    parent.append(pTag)
+    console.log(msg)
+}
 
